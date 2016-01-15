@@ -1,7 +1,10 @@
-# Contributing to Gherkin 3
+# Contributing to Gherkin
 
-Gherkin3 is implemented in several different languages, and each language implementation
-lives in a separate git repository.
+Gherkin is implemented in several different languages. Each implementation is
+in a separate sub directory in this repository.
+
+A copy of each implementation also exists in a separate git repository,
+under `https://github.com/cucumber/gherkin-DIRNAME`.
 
 The code in each of those git repositories can be built and used independently.
 This is useful for people who only want to *use* Gherkin without *contributing*
@@ -48,12 +51,21 @@ Prerequisites:
   * Maven
 * Node.js or IO.js
 * Ruby
+* Python (both python2 & python3)
 * `make`
-* `jq`
+* `jq` (>= 1.4 for `--sort-keys` option)
 * `diff`
 * `git`
 
 With all this installed, just run `make` from the root directory.
+
+Notes:
+* Mono might complain about NuGet.CommandLine authentication or decryption failing, you can type
+```
+mozroots --import --sync
+```
+to import Mozilla certificates & solve the problem
+* on Ubuntu you need to create a symbolic link from `/usr/bin/nodejs` to `/usr/bin/node`
 
 ## Contributing changes
 
@@ -61,6 +73,16 @@ With all this installed, just run `make` from the root directory.
 * Don't lump unrelated changes together.
 * If you change code, please make sure all implementations are changed accordingly.
   * If you don't to do this, we might reject your patch because the burden to keep parsers in sync is now on us.
+
+## Adding or updating an i18n language
+
+1) Edit the file gherkin-lanauges.json.
+
+2) Distribute the changes to the different parser implementations, this requires `make`, `jq`, `diff`, but no compiler/interpreters:
+
+    make update-gherkin-languages
+
+3) Make a pull request with the changed files.
 
 ## Building individual parsers
 
@@ -85,6 +107,31 @@ it will try to regenerate it the next time you run `make`.
 
 When all files are identical and successfully compared, `make` will create the `.compared`
 file, indicating that the acceptance tests passed.
+
+## Consistency between implementations
+
+TL;DR anyone who only knows one of the supported programming languages should be
+able to fix a bug or add a feature in all the other implementations. -Simply by
+finding their way around a consistently organised codebase.
+
+As of Sept 2015 Gherkin is implemented in 6 languages. This number is likely to
+increase to a dozen within a year or two. Very few programmers are intimate with
+all those languages. Therefore, in order to make it as easy as possible to refactor,
+fix bugs, add features and release packages it is essential that all implementations
+have a similar structure.
+
+For example, I (Aslak) don't currently know go at all, and very little Python.
+Still, I have been able to fix bugs and refactor the go and python code simply
+because I know where to find stuff since they follow the same structure.
+
+If one implementation looks completely different, this becomes a huge burden that
+will slow everything down.
+
+So for this reason, please don't start a new implementation that doesn't use Berp,
+or add a feature in one implementation without also doing it in all the other
+implementations. Don't refactor the code to follow some nice design pattern if
+it makes the code so different from the other implementations that it can no longer
+be maintained by someone who doesn't know the language.
 
 ## Implementing a parser for a new language
 
@@ -121,7 +168,7 @@ pass!
 Then send us a pull-request :-)
 
 And if you're stuck - please shoot an email to the *cukes-devs* Google Group
-or find us on [Gitter](https://gitter.im/cucumber/gherkin3).
+or find us on [Gitter](https://gitter.im/cucumber/gherkin).
 
 ## Make a release
 
@@ -137,9 +184,22 @@ When all components are released, update the master repo:
 
     make pull-subtrees
 
-Then finally create a tag there:
+This might cause some trivial merge conflicts. If that happens, resolve them manually,
+commit and pull subtrees again.
 
-    git tag v3.0.0
+Now, update `CHANGELOG.md` with the new release number and date, while keeping
+a section for the upcoming changes. Also update the links at the bottom of the file.
+
+Then finally create a tag in this master repo and push.
+
+    git commit -m "Release X.Y.Z"
+    git tag -a -m "Version X.Y.Z" vX.Y.Z
+    git push
+    git push --tags
+    make push-subtrees
+
+The last step might cause some conflicts. If that happens, force push the failing
+subtree (see Troubleshooting section) and run `make push-subtrees` again.
 
 ## Benchmarking
 
@@ -149,7 +209,7 @@ how many milliseconds it takes to parse all the files under `testdata/good`
 ## Verify all of Cucumber's i18n examples
 
 If you have [cucumber-ruby](https://github.com/cucumber/cucumber-ruby) cloned
-next to the gherkin3 directory, try processing all of the files.
+next to the gherkin directory, try processing all of the files.
 
 With just the scanner:
 
@@ -181,4 +241,14 @@ With the parser:
 
 5) Inspect the generated `.feature.ast.json` file manually to see if it's good.
 
-6) Run `make` from the root directory to verify that all parsers parse it ok.
+6) Generate the pickles:
+
+    cd [LANGUAGE]
+    ./bin/gherkin-generate-pickles \
+    ../testdata/good/newfile.feature | \
+    jq --sort-keys "." > \
+    ../testdata/good/newfile.feature.pickles.json
+
+7) Inspect the generated `.feature.pickles.json` file manually to see if it's good.
+
+8) Run `make` from the root directory to verify that all parsers parse it ok.

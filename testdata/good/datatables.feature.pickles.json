@@ -1,107 +1,258 @@
 [
   {
-    "name": "Scenario: minimalistic",
-    "source": [
+    "locations": [
       {
         "column": 3,
-        "line": 3
+        "line": 3,
+        "path": "../testdata/good/datatables.feature"
       }
     ],
+    "name": "Scenario: minimalistic",
     "steps": [
       {
-        "argument": {
-          "rows": [
-            [
-              "foo",
-              "bar"
-            ],
-            [
-              "boz",
-              "boo"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 4
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 5,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "foo"
+                  },
+                  {
+                    "location": {
+                      "column": 15,
+                      "line": 5,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "bar"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 6,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boz"
+                  },
+                  {
+                    "location": {
+                      "column": 15,
+                      "line": 6,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boo"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
+          {
+            "column": 11,
+            "line": 4,
+            "path": "../testdata/good/datatables.feature"
           }
         ],
         "text": "a simple data table"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "foo"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 7
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 8,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "foo"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
+          {
+            "column": 9,
+            "line": 7,
+            "path": "../testdata/good/datatables.feature"
           }
         ],
         "text": "a data table with a single cell"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "foo",
-              "bar",
-              "boz"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 9
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 11,
+                      "line": 10,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "foo"
+                  },
+                  {
+                    "location": {
+                      "column": 15,
+                      "line": 10,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "bar"
+                  },
+                  {
+                    "location": {
+                      "column": 23,
+                      "line": 10,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boz"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
+          {
+            "column": 9,
+            "line": 9,
+            "path": "../testdata/good/datatables.feature"
           }
         ],
         "text": "a data table with different fromatting"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "foo",
-              "",
-              "boz"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 11
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 8,
+                      "line": 12,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "foo"
+                  },
+                  {
+                    "location": {
+                      "column": 12,
+                      "line": 12,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": ""
+                  },
+                  {
+                    "location": {
+                      "column": 13,
+                      "line": 12,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boz"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
+          {
+            "column": 9,
+            "line": 11,
+            "path": "../testdata/good/datatables.feature"
           }
         ],
         "text": "a data table with an empty cell"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "foo",
-              "bar"
-            ],
-            [
-              "boz",
-              "boo"
-            ],
-            [
-              "boz2",
-              "boo2"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 13
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 14,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "foo"
+                  },
+                  {
+                    "location": {
+                      "column": 15,
+                      "line": 14,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "bar"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 16,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boz"
+                  },
+                  {
+                    "location": {
+                      "column": 16,
+                      "line": 16,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boo"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 18,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boz2"
+                  },
+                  {
+                    "location": {
+                      "column": 16,
+                      "line": 18,
+                      "path": "../testdata/good/datatables.feature"
+                    },
+                    "value": "boo2"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
+          {
+            "column": 9,
+            "line": 13,
+            "path": "../testdata/good/datatables.feature"
           }
         ],
         "text": "a data table with comments and newlines inside"

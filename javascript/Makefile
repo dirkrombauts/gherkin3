@@ -3,6 +3,7 @@ BAD_FEATURE_FILES  = $(shell find ../testdata/bad -name "*.feature")
 
 TOKENS   = $(patsubst ../testdata/%.feature,acceptance/testdata/%.feature.tokens,$(GOOD_FEATURE_FILES))
 ASTS     = $(patsubst ../testdata/%.feature,acceptance/testdata/%.feature.ast.json,$(GOOD_FEATURE_FILES))
+PICKLES  = $(patsubst ../testdata/%.feature,acceptance/testdata/%.feature.pickles.json,$(GOOD_FEATURE_FILES))
 ERRORS   = $(patsubst ../testdata/%.feature,acceptance/testdata/%.feature.errors,$(BAD_FEATURE_FILES))
 
 JAVASCRIPT_FILES = $(shell find lib -name "*.js") index.js
@@ -10,16 +11,12 @@ JAVASCRIPT_FILES = $(shell find lib -name "*.js") index.js
 all: .compared
 .PHONY: all
 
-.compared: .built $(TOKENS) $(ASTS) $(ERRORS)
+.compared: .built $(TOKENS) $(ASTS) $(PICKLES) $(ERRORS)
 	touch $@
 
-.built: show-version-info lib/gherkin/parser.js lib/gherkin/gherkin-languages.json $(JAVASCRIPT_FILES) dist/gherkin.js dist/gherkin.min.js node_modules/.fetched LICENSE
+.built: lib/gherkin/parser.js lib/gherkin/gherkin-languages.json $(JAVASCRIPT_FILES) dist/gherkin.js dist/gherkin.min.js node_modules/.fetched LICENSE
 	./node_modules/.bin/mocha
 	touch $@
-
-show-version-info:
-	node --version
-.PHONY: show-version-info
 
 node_modules/.fetched: package.json
 	npm install
@@ -36,6 +33,17 @@ acceptance/testdata/%.feature.ast.json: ../testdata/%.feature ../testdata/%.feat
 	bin/gherkin-generate-ast $< | jq --sort-keys "." > $@
 	diff --unified $<.ast.json $@
 .DELETE_ON_ERROR: acceptance/testdata/%.feature.ast.json
+
+# acceptance/testdata/%.feature.pickles.json: ../testdata/%.feature .built
+# 	mkdir -p `dirname $@`
+# 	bin/gherkin-generate-pickles $< | jq --sort-keys "." > $<.pickles.json
+# .DELETE_ON_ERROR: ../testdata/%.feature.pickles.json
+
+acceptance/testdata/%.feature.pickles.json: ../testdata/%.feature ../testdata/%.feature.pickles.json .built
+	mkdir -p `dirname $@`
+	bin/gherkin-generate-pickles $< | jq --sort-keys "." > $@
+	diff --unified $<.pickles.json $@
+.DELETE_ON_ERROR: acceptance/testdata/%.feature.pickles.json
 
 acceptance/testdata/%.feature.errors: ../testdata/%.feature ../testdata/%.feature.errors .built
 	mkdir -p `dirname $@`
@@ -57,7 +65,7 @@ dist/gherkin.js: lib/gherkin/parser.js LICENSE node_modules/.fetched
 	echo '/*' > $@
 	cat LICENSE >> $@
 	echo '*/' >> $@
-	./node_modules/.bin/browserify index.js --ignore-missing >> $@
+	./node_modules/.bin/browserify index.js >> $@
 
 dist/gherkin.min.js: dist/gherkin.js node_modules/.fetched
 	mkdir -p `dirname $@`
@@ -72,3 +80,6 @@ LICENSE: ../LICENSE
 clean:
 	rm -rf .compared .built acceptance lib/gherkin/parser.js lib/gherkin/gherkin-languages.json dist
 .PHONY: clean
+
+update-gherkin-languages: lib/gherkin/gherkin-languages.json
+.PHONY: update-gherkin-languages

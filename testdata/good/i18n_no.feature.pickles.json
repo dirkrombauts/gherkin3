@@ -1,36 +1,43 @@
 [
   {
-    "name": "Scenario: Parsing many languages",
-    "source": [
+    "locations": [
       {
         "column": 3,
-        "line": 4
+        "line": 4,
+        "path": "../testdata/good/i18n_no.feature"
       }
     ],
+    "name": "Scenario: Parsing many languages",
     "steps": [
       {
-        "source": [
+        "arguments": [],
+        "locations": [
           {
-            "column": 5,
-            "line": 5
+            "column": 10,
+            "line": 5,
+            "path": "../testdata/good/i18n_no.feature"
           }
         ],
         "text": "Gherkin supports many languages"
       },
       {
-        "source": [
+        "arguments": [],
+        "locations": [
           {
-            "column": 5,
-            "line": 6
+            "column": 9,
+            "line": 6,
+            "path": "../testdata/good/i18n_no.feature"
           }
         ],
         "text": "Norwegian keywords are parsed"
       },
       {
-        "source": [
+        "arguments": [],
+        "locations": [
           {
-            "column": 5,
-            "line": 7
+            "column": 8,
+            "line": 7,
+            "path": "../testdata/good/i18n_no.feature"
           }
         ],
         "text": "they should be recognized"

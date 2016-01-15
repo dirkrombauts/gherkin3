@@ -3,6 +3,7 @@ package gherkin
 import (
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -10,13 +11,16 @@ const (
 	COMMENT_PREFIX                  = "#"
 	TAG_PREFIX                      = "@"
 	TITLE_KEYWORD_SEPARATOR         = ":"
-	TABLE_CELL_SEPARATOR            = "|"
+	TABLE_CELL_SEPARATOR            = '|'
+	ESCAPE_CHAR                     = '\\'
+	ESCAPED_NEWLINE                 = 'n'
 	DOCSTRING_SEPARATOR             = "\"\"\""
 	DOCSTRING_ALTERNATIVE_SEPARATOR = "```"
 )
 
 type matcher struct {
 	gdp                      GherkinDialectProvider
+        default_lang             string
 	lang                     string
 	dialect                  *GherkinDialect
 	activeDocStringSeparator string
@@ -27,9 +31,29 @@ type matcher struct {
 func NewMatcher(gdp GherkinDialectProvider) Matcher {
 	return &matcher{
 		gdp:             gdp,
+		default_lang:    DEFAULT_DIALECT,
 		lang:            DEFAULT_DIALECT,
 		dialect:         gdp.GetDialect(DEFAULT_DIALECT),
 		languagePattern: regexp.MustCompile("^\\s*#\\s*language\\s*:\\s*([a-zA-Z\\-_]+)\\s*$"),
+	}
+}
+
+func NewLanguageMatcher(gdp GherkinDialectProvider, language string) Matcher {
+	return &matcher{
+		gdp:             gdp,
+		default_lang:    language,
+		lang:            language,
+		dialect:         gdp.GetDialect(language),
+		languagePattern: regexp.MustCompile("^\\s*#\\s*language\\s*:\\s*([a-zA-Z\\-_]+)\\s*$"),
+	}
+}
+
+func (m *matcher) Reset() {
+	m.indentToRemove = 0
+	m.activeDocStringSeparator = ""
+	if m.lang != "en" {
+		m.dialect = m.gdp.GetDialect(m.default_lang)
+		m.lang = "en"
 	}
 }
 
@@ -159,17 +183,41 @@ func (m *matcher) MatchDocStringSeparator(line *Line) (ok bool, token *Token, er
 }
 
 func (m *matcher) MatchTableRow(line *Line) (ok bool, token *Token, err error) {
-	if line.StartsWith(TABLE_CELL_SEPARATOR) {
+	var firstChar, firstPos = utf8.DecodeRuneInString(line.TrimmedLineText)
+	if firstChar == TABLE_CELL_SEPARATOR {
 		var cells []*LineSpan
-		var column = line.Indent() + 1
-		ttxt := strings.Trim(line.TrimmedLineText, " ")
-		splits := strings.Split(ttxt[1:len(ttxt)-1], TABLE_CELL_SEPARATOR)
-		for i := range splits {
-			element := splits[i]
-			txt := strings.TrimLeft(element, " ")
-			ind := len(element) - len(txt)
-			cells = append(cells, &LineSpan{column + ind + 1, strings.TrimRight(txt, " ")})
-			column = column + len(element) + 1
+		var cell []rune
+		var startCol = line.Indent() + 2 // column where the current cell started
+		// start after the first separator, it's not included in the cell
+		for i, w, col := firstPos, 0, startCol; i < len(line.TrimmedLineText); i += w {
+			var char rune
+			char, w = utf8.DecodeRuneInString(line.TrimmedLineText[i:])
+			if char == TABLE_CELL_SEPARATOR {
+				// append current cell
+				txt := string(cell)
+				txtTrimmed := strings.TrimLeft(txt, " ")
+				ind := len(txt) - len(txtTrimmed)
+				cells = append(cells, &LineSpan{startCol + ind, strings.TrimRight(txtTrimmed, " ")})
+				// start building next
+				cell = make([]rune, 0)
+				startCol = col + 1
+			} else if char == ESCAPE_CHAR {
+				// skip this character but count the column
+				i += w
+				col++
+				char, w = utf8.DecodeRuneInString(line.TrimmedLineText[i:])
+				if char == ESCAPED_NEWLINE {
+					cell = append(cell, '\n')
+				} else {
+					if char != TABLE_CELL_SEPARATOR && char != ESCAPE_CHAR {
+						cell = append(cell, ESCAPE_CHAR)
+					}
+					cell = append(cell, char)
+				}
+			} else {
+				cell = append(cell, char)
+			}
+			col++
 		}
 
 		token, ok = m.newTokenAtLocation(line.LineNumber, line.Indent()), true
@@ -206,13 +254,17 @@ func (m *matcher) MatchOther(line *Line) (ok bool, token *Token, err error) {
 	txt := strings.TrimLeft(element, " ")
 
 	if len(element)-len(txt) > m.indentToRemove {
-		token.Text = unescapeDocString(element[m.indentToRemove:])
+		token.Text = m.unescapeDocString(element[m.indentToRemove:])
 	} else {
-		token.Text = unescapeDocString(txt)
+		token.Text = m.unescapeDocString(txt)
 	}
 	return
 }
 
-func unescapeDocString(text string) string {
-	return strings.Replace(text, "\\\"\\\"\\\"", "\"\"\"", -1)
+func (m *matcher) unescapeDocString(text string) string {
+	if m.activeDocStringSeparator != "" {
+		return strings.Replace(text, "\\\"\\\"\\\"", "\"\"\"", -1)
+	} else {
+		return text
+	}
 }

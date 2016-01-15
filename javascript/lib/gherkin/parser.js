@@ -1,57 +1,66 @@
 // This file is generated. Do not edit! Edit gherkin-javascript.razor instead.
 var Errors = require('./errors');
+var AstBuilder = require('./ast_builder');
+var TokenScanner = require('./token_scanner');
+var TokenMatcher = require('./token_matcher');
 
-module.exports = function Parser() {
+var RULE_TYPES = [
+  'None',
+  '_EOF', // #EOF
+  '_Empty', // #Empty
+  '_Comment', // #Comment
+  '_TagLine', // #TagLine
+  '_FeatureLine', // #FeatureLine
+  '_BackgroundLine', // #BackgroundLine
+  '_ScenarioLine', // #ScenarioLine
+  '_ScenarioOutlineLine', // #ScenarioOutlineLine
+  '_ExamplesLine', // #ExamplesLine
+  '_StepLine', // #StepLine
+  '_DocStringSeparator', // #DocStringSeparator
+  '_TableRow', // #TableRow
+  '_Language', // #Language
+  '_Other', // #Other
+  'Feature', // Feature! := Feature_Header Background? Scenario_Definition*
+  'Feature_Header', // Feature_Header! := #Language? Tags? #FeatureLine Feature_Description
+  'Background', // Background! := #BackgroundLine Background_Description Scenario_Step*
+  'Scenario_Definition', // Scenario_Definition! := Tags? (Scenario | ScenarioOutline)
+  'Scenario', // Scenario! := #ScenarioLine Scenario_Description Scenario_Step*
+  'ScenarioOutline', // ScenarioOutline! := #ScenarioOutlineLine ScenarioOutline_Description ScenarioOutline_Step* Examples_Definition+
+  'Examples_Definition', // Examples_Definition! [#Empty|#Comment|#TagLine-&gt;#ExamplesLine] := Tags? Examples
+  'Examples', // Examples! := #ExamplesLine Examples_Description #TableRow #TableRow+
+  'Scenario_Step', // Scenario_Step := Step
+  'ScenarioOutline_Step', // ScenarioOutline_Step := Step
+  'Step', // Step! := #StepLine Step_Arg?
+  'Step_Arg', // Step_Arg := (DataTable | DocString)
+  'DataTable', // DataTable! := #TableRow+
+  'DocString', // DocString! := #DocStringSeparator #Other* #DocStringSeparator
+  'Tags', // Tags! := #TagLine+
+  'Feature_Description', // Feature_Description := Description_Helper
+  'Background_Description', // Background_Description := Description_Helper
+  'Scenario_Description', // Scenario_Description := Description_Helper
+  'ScenarioOutline_Description', // ScenarioOutline_Description := Description_Helper
+  'Examples_Description', // Examples_Description := Description_Helper
+  'Description_Helper', // Description_Helper := #Empty* Description? #Comment*
+  'Description', // Description! := #Other+
+];
 
-  var RULE_TYPES = [
-    'None',
-    '_EOF', // #EOF
-    '_Empty', // #Empty
-    '_Comment', // #Comment
-    '_TagLine', // #TagLine
-    '_FeatureLine', // #FeatureLine
-    '_BackgroundLine', // #BackgroundLine
-    '_ScenarioLine', // #ScenarioLine
-    '_ScenarioOutlineLine', // #ScenarioOutlineLine
-    '_ExamplesLine', // #ExamplesLine
-    '_StepLine', // #StepLine
-    '_DocStringSeparator', // #DocStringSeparator
-    '_TableRow', // #TableRow
-    '_Language', // #Language
-    '_Other', // #Other
-    'Feature', // Feature! := Feature_Header Background? Scenario_Definition*
-    'Feature_Header', // Feature_Header! := #Language? Tags? #FeatureLine Feature_Description
-    'Background', // Background! := #BackgroundLine Background_Description Scenario_Step*
-    'Scenario_Definition', // Scenario_Definition! := Tags? (Scenario | ScenarioOutline)
-    'Scenario', // Scenario! := #ScenarioLine Scenario_Description Scenario_Step*
-    'ScenarioOutline', // ScenarioOutline! := #ScenarioOutlineLine ScenarioOutline_Description ScenarioOutline_Step* Examples_Definition+
-    'Examples_Definition', // Examples_Definition! [#Empty|#Comment|#TagLine-&gt;#ExamplesLine] := Tags? Examples
-    'Examples', // Examples! := #ExamplesLine Examples_Description #TableRow #TableRow+
-    'Scenario_Step', // Scenario_Step := Step
-    'ScenarioOutline_Step', // ScenarioOutline_Step := Step
-    'Step', // Step! := #StepLine Step_Arg?
-    'Step_Arg', // Step_Arg := (DataTable | DocString)
-    'DataTable', // DataTable! := #TableRow+
-    'DocString', // DocString! := #DocStringSeparator #Other* #DocStringSeparator
-    'Tags', // Tags! := #TagLine+
-    'Feature_Description', // Feature_Description := Description_Helper
-    'Background_Description', // Background_Description := Description_Helper
-    'Scenario_Description', // Scenario_Description := Description_Helper
-    'ScenarioOutline_Description', // ScenarioOutline_Description := Description_Helper
-    'Examples_Description', // Examples_Description := Description_Helper
-    'Description_Helper', // Description_Helper := #Empty* Description? #Comment*
-    'Description', // Description! := #Other+
-  ]
+module.exports = function Parser(builder) {
+  builder = builder || new AstBuilder();
+  var context;
 
-  var context = {};
-
-  this.parse = function(tokenScanner, astBuilder, tokenMatcher) {
-    context.tokenScanner = tokenScanner;
-    context.astBuilder = astBuilder;
-    context.tokenMatcher = tokenMatcher;
-    context.tokenQueue = [];
-    context.errors = [];
-
+  this.parse = function(tokenScanner, tokenMatcher) {
+    if(typeof tokenScanner == 'string') {
+      tokenScanner = new TokenScanner(tokenScanner);
+    }
+    tokenMatcher = tokenMatcher || new TokenMatcher();
+    builder.reset();
+    tokenMatcher.reset();
+    context = {
+      tokenScanner: tokenScanner,
+      tokenMatcher: tokenMatcher,
+      tokenQueue: [],
+      errors: []
+    };
     startRule(context, 'Feature');
     var state = 0;
     var token = null;
@@ -67,7 +76,7 @@ module.exports = function Parser() {
       throw Errors.CompositeParserException.create(context.errors);
     }
 
-    return getResult(context);
+    return getResult();
   };
 
   function addError(context, error) {
@@ -78,24 +87,24 @@ module.exports = function Parser() {
 
   function startRule(context, ruleType) {
     handleAstError(context, function () {
-      context.astBuilder.startRule(ruleType);
+      builder.startRule(ruleType);
     });
   }
 
   function endRule(context, ruleType) {
     handleAstError(context, function () {
-      context.astBuilder.endRule(ruleType);
+      builder.endRule(ruleType);
     });
   }
 
   function build(context, token) {
     handleAstError(context, function () {
-      context.astBuilder.build(token);
+      builder.build(token);
     });
   }
 
-  function getResult(context) {
-    return context.astBuilder.getResult();
+  function getResult() {
+    return builder.getResult();
   }
 
   function handleAstError(context, action) {

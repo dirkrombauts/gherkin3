@@ -5,7 +5,9 @@ sudo: false
 before_install:
   - export EnableNuGetPackageRestore=true
 
-script: "mono --runtime=v4.0 .nuget/NuGet.exe restore Gherkin.CSharp.sln;xbuild /p:Configuration=Debug"
+before_script: "mono .nuget/NuGet.exe restore Gherkin.CSharp.sln"
+script: "xbuild /p:Configuration=Release"
+after_success: "mono .nuget/NuGet.exe pack Gherkin.NuGetPackages/Gherkin.nuspec"
 
 branches:
   only:
@@ -14,5 +16,3 @@ branches:
 notifications:
   email:
     - cukes-devs@googlegroups.com
-  irc:
-    - "irc.freenode.org#cucumber"

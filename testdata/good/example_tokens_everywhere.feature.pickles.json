@@ -1,45 +1,73 @@
 [
   {
-    "name": "Scenario: the un",
-    "source": [
+    "locations": [
+      {
+        "column": 7,
+        "line": 13,
+        "path": "../testdata/good/example_tokens_everywhere.feature"
+      },
       {
         "column": 3,
-        "line": 3
+        "line": 3,
+        "path": "../testdata/good/example_tokens_everywhere.feature"
       }
     ],
+    "name": "Scenario: the un",
     "steps": [
       {
-        "argument": {
-          "content": "trois"
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 4
-          },
+            "content": "trois",
+            "location": {
+              "column": 7,
+              "line": 5,
+              "path": "../testdata/good/example_tokens_everywhere.feature"
+            }
+          }
+        ],
+        "locations": [
           {
             "column": 7,
-            "line": 13
+            "line": 13,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
+          },
+          {
+            "column": 11,
+            "line": 4,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
           }
         ],
         "text": "the deux:"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "cinq"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 8
-          },
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 9,
+                      "path": "../testdata/good/example_tokens_everywhere.feature"
+                    },
+                    "value": "cinq"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
           {
             "column": 7,
-            "line": 13
+            "line": 13,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
+          },
+          {
+            "column": 11,
+            "line": 8,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
           }
         ],
         "text": "the quatre:"
@@ -48,46 +76,74 @@
     "tags": []
   },
   {
-    "name": "Scenario: the uno",
-    "source": [
+    "locations": [
+      {
+        "column": 7,
+        "line": 14,
+        "path": "../testdata/good/example_tokens_everywhere.feature"
+      },
       {
         "column": 3,
-        "line": 3
+        "line": 3,
+        "path": "../testdata/good/example_tokens_everywhere.feature"
       }
     ],
+    "name": "Scenario: the uno",
     "steps": [
       {
-        "argument": {
-          "content": "tres"
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 4
-          },
+            "content": "tres",
+            "location": {
+              "column": 7,
+              "line": 5,
+              "path": "../testdata/good/example_tokens_everywhere.feature"
+            }
+          }
+        ],
+        "locations": [
           {
             "column": 7,
-            "line": 14
+            "line": 14,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
+          },
+          {
+            "column": 11,
+            "line": 4,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
           }
         ],
         "text": "the dos:"
       },
       {
-        "argument": {
-          "rows": [
-            [
-              "cinco"
-            ]
-          ]
-        },
-        "source": [
+        "arguments": [
           {
-            "column": 5,
-            "line": 8
-          },
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "location": {
+                      "column": 9,
+                      "line": 9,
+                      "path": "../testdata/good/example_tokens_everywhere.feature"
+                    },
+                    "value": "cinco"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locations": [
           {
             "column": 7,
-            "line": 14
+            "line": 14,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
+          },
+          {
+            "column": 11,
+            "line": 8,
+            "path": "../testdata/good/example_tokens_everywhere.feature"
           }
         ],
         "text": "the quatro:"

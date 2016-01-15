@@ -1,9 +1,11 @@
+var countSymbols = require('./count_symbols')
+
 function GherkinLine(lineText, lineNumber) {
   this.lineText = lineText;
   this.lineNumber = lineNumber;
   this.trimmedLineText = lineText.replace(/^\s+/g, ''); // ltrim
   this.isEmpty = this.trimmedLineText.length == 0;
-  this.indent = lineText.length - this.trimmedLineText.length;
+  this.indent = countSymbols(lineText) - countSymbols(this.trimmedLineText);
 };
 
 GherkinLine.prototype.startsWith = function startsWith(prefix) {
@@ -27,16 +29,43 @@ GherkinLine.prototype.getRestTrimmed = function getRestTrimmed(length) {
 };
 
 GherkinLine.prototype.getTableCells = function getTableCells() {
-  var column = this.indent + 1;
-  var items = this.trimmedLineText.split('|');
-  items.shift(); // Skip the beginning of the line
-  items.pop(); // Skip the one after the last pipe
-  return items.map(function (item) {
-    var cellIndent = item.length - item.replace(/^\s+/g, '').length + 1;
-    var span = {column: column + cellIndent, text: item.trim()};
-    column += item.length + 1;
-    return span;
-  });
+  var cells = [];
+  var col = 0;
+  var startCol = col + 1;
+  var cell = '';
+  var firstCell = true;
+  while (col < this.trimmedLineText.length) {
+    var chr = this.trimmedLineText[col];
+    col++;
+
+    if (chr == '|') {
+      if (firstCell) {
+        // First cell (content before the first |) is skipped
+        firstCell = false;
+      } else {
+        var cellIndent = cell.length - cell.replace(/^\s+/g, '').length;
+        var span = {column: this.indent + startCol + cellIndent, text: cell.trim()};
+        cells.push(span);
+      }
+      cell = '';
+      startCol = col + 1;
+    } else if (chr == '\\') {
+      chr = this.trimmedLineText[col];
+      col += 1;
+      if (chr == 'n') {
+        cell += '\n';
+      } else {
+        if (chr != '|' && chr != '\\') {
+          cell += '\\';
+        }
+        cell += chr;
+      }
+    } else {
+      cell += chr;
+    }
+  }
+
+  return cells;
 };
 
 GherkinLine.prototype.getTags = function getTags() {

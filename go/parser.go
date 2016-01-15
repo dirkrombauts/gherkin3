@@ -180,8 +180,10 @@ func (pe parseErrors) Error() string {
   return strings.Join(ret,"\n")
 }
 
-func (p *parser) Parse(s Scanner, b Builder, m Matcher) (err error) {
-  ctxt := &parseContext{p,s,b,m,nil,nil}
+func (p *parser) Parse(s Scanner, m Matcher) (err error) {
+  p.builder.Reset()
+  m.Reset()
+  ctxt := &parseContext{p,s,p.builder,m,nil,nil}
   var state int
   ctxt.startRule(RuleType_Feature)
   for {
@@ -2094,6 +2096,7 @@ type Matcher interface {
   MatchTableRow(line *Line) (bool,*Token,error)
   MatchLanguage(line *Line) (bool,*Token,error)
   MatchOther(line *Line) (bool,*Token,error)
+  Reset()  
 }
 
 func (ctxt *parseContext) isMatch_EOF(line *Line) bool {
@@ -2274,7 +2277,7 @@ func (ctxt *parseContext) lookahead_0(initialLine *Line) bool {
         match = true;
         break
       }
-      if false  || ctxt.isMatch_Empty(line) || ctxt.isMatch_Comment(line) || ctxt.isMatch_TagLine(line) {
+      if !(false  || ctxt.isMatch_Empty(line) || ctxt.isMatch_Comment(line) || ctxt.isMatch_TagLine(line)) {
         break
       }
       if atEof {

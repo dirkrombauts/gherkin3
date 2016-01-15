@@ -1,12 +1,14 @@
-Please read [CONTRIBUTING](https://github.com/cucumber/gherkin3/blob/master/CONTRIBUTING.md) first.
-You should clone the [cucumber/gherkin3](https://github.com/cucumber/gherkin3) repo if you want
+Please read [CONTRIBUTING](https://github.com/cucumber/gherkin/blob/master/CONTRIBUTING.md) first.
+You should clone the [cucumber/gherkin](https://github.com/cucumber/gherkin) repo if you want
 to contribute.
 
-## Using make
+## Run tests
+
+### Using make
 
 Just run `make` from this directory.
 
-## Using just Maven
+### Using just Maven
 
 Just run `mvn clean test` from this directory.
 
@@ -15,7 +17,9 @@ run when you build with `make`.
 
 ## Make a release
 
-    # TODO: Use the maven release plugin
+    # Verify that version in `pom.xml` has the right SNAPSHOT release. Commit it.
+    mvn release:clean
+  	mvn --batch-mode -P release-sign-artifacts release:prepare -DdevelopmentVersion=X.Y.Z+1-SNAPSHOT
+  	mvn --batch-mode -P release-sign-artifacts release:perform
 
-    # Change version in `pom.xml`
-    mvn -Psign clean source:jar javadoc:jar deploy
+Log in to https://oss.sonatype.org/, close and release the project. 

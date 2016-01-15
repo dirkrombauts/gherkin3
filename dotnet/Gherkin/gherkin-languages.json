@@ -189,14 +189,14 @@
     "native": "Bahasa Melayu",
     "scenario": [
       "Senario",
-      "Situai",
+      "Situasi",
       "Keadaan"
     ],
     "scenarioOutline": [
-      "Template Senario",
-      "Template Situai",
-      "Template Keadaan",
-      "Menggariskan Senario"
+      "Kerangka Senario",
+      "Kerangka Situasi",
+      "Kerangka Keadaan",
+      "Garis Panduan Senario"
     ],
     "then": [
       "* ",
@@ -206,6 +206,48 @@
     "when": [
       "* ",
       "Apabila "
+    ]
+  },
+  "bs": {
+    "and": [
+      "* ",
+      "I ",
+      "A "
+    ],
+    "background": [
+      "Pozadina"
+    ],
+    "but": [
+      "* ",
+      "Ali "
+    ],
+    "examples": [
+      "Primjeri"
+    ],
+    "feature": [
+      "Karakteristika"
+    ],
+    "given": [
+      "* ",
+      "Dato "
+    ],
+    "name": "Bosnian",
+    "native": "Bosanski",
+    "scenario": [
+      "Scenariju",
+      "Scenario"
+    ],
+    "scenarioOutline": [
+      "Scenariju-obris",
+      "Scenario-outline"
+    ],
+    "then": [
+      "* ",
+      "Zatim "
+    ],
+    "when": [
+      "* ",
+      "Kada "
     ]
   },
   "ca": {
@@ -454,6 +496,45 @@
     "when": [
       "* ",
       "Όταν "
+    ]
+  },
+  "em": {
+    "and": [
+      "* ",
+      "😂"
+    ],
+    "background": [
+      "💤"
+    ],
+    "but": [
+      "* ",
+      "😔"
+    ],
+    "examples": [
+      "📓"
+    ],
+    "feature": [
+      "📚"
+    ],
+    "given": [
+      "* ",
+      "😐"
+    ],
+    "name": "Emoji",
+    "native": "😀",
+    "scenario": [
+      "📕"
+    ],
+    "scenarioOutline": [
+      "📖"
+    ],
+    "then": [
+      "* ",
+      "🙏"
+    ],
+    "when": [
+      "* ",
+      "🎬"
     ]
   },
   "en": {
@@ -918,6 +999,8 @@
   "fr": {
     "and": [
       "* ",
+      "Et que ",
+      "Et qu'",
       "Et "
     ],
     "background": [
@@ -925,6 +1008,8 @@
     ],
     "but": [
       "* ",
+      "Mais que ",
+      "Mais qu'",
       "Mais "
     ],
     "examples": [
@@ -936,10 +1021,14 @@
     "given": [
       "* ",
       "Soit ",
+      "Etant donné que ",
+      "Etant donné qu'",
       "Etant donné ",
       "Etant donnée ",
       "Etant donnés ",
       "Etant données ",
+      "Étant donné que ",
+      "Étant donné qu'",
       "Étant donné ",
       "Étant donnée ",
       "Étant donnés ",
@@ -1739,6 +1828,50 @@
     "when": [
       "* ",
       "Ja "
+    ]
+  },
+  "mn": {
+    "and": [
+      "* ",
+      "Мөн ",
+      "Тэгээд "
+    ],
+    "background": [
+      "Агуулга"
+    ],
+    "but": [
+      "* ",
+      "Гэхдээ ",
+      "Харин "
+    ],
+    "examples": [
+      "Тухайлбал"
+    ],
+    "feature": [
+      "Функц",
+      "Функционал"
+    ],
+    "given": [
+      "* ",
+      "Өгөгдсөн нь ",
+      "Анх "
+    ],
+    "name": "Mongolian",
+    "native": "монгол",
+    "scenario": [
+      "Сценар"
+    ],
+    "scenarioOutline": [
+      "Сценарын төлөвлөгөө"
+    ],
+    "then": [
+      "* ",
+      "Тэгэхэд ",
+      "Үүний дараа "
+    ],
+    "when": [
+      "* ",
+      "Хэрэв "
     ]
   },
   "nl": {

@@ -18,11 +18,22 @@ public class TokenMatcher implements ITokenMatcher {
 
     public TokenMatcher(IGherkinDialectProvider dialectProvider) {
         this.dialectProvider = dialectProvider;
-        currentDialect = dialectProvider.getDefaultDialect();
+        reset();
     }
 
     public TokenMatcher() {
         this(new GherkinDialectProvider());
+    }
+
+    public TokenMatcher(String default_dialect_name) {
+        this(new GherkinDialectProvider(default_dialect_name));
+    }
+
+    @Override
+    public void reset() {
+        activeDocStringSeparator = null;
+        indentToRemove = 0;
+        currentDialect = dialectProvider.getDefaultDialect();
     }
 
     public GherkinDialect getCurrentDialect() {
@@ -183,6 +194,6 @@ public class TokenMatcher implements ITokenMatcher {
     }
 
     private String unescapeDocString(String text) {
-        return text.replace("\\\"\\\"\\\"", "\"\"\"");
+        return activeDocStringSeparator != null ? text.replace("\\\"\\\"\\\"", "\"\"\"") : text;
     }
 }
